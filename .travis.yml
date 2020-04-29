@@ -5,13 +5,14 @@ jdk:
  
 services:
  - docker
+ - docker build -t kubernetes .
 
 script:
  - mvn install
  
 after_success:
- - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
- - docker build -t kubernetes .
- - docker images
- - docker tag kubernetes $DOCKER_USERNAME/kubernetes
- - docker push $DOCKER_USERNAME/kubernetes
+  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+  - docker tag kubernetes $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
+  - docker push $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
+  - docker tag kubernetes $DOCKER_USER/kubernetes:latest
+  - docker push $DOCKER_USER/kubernetes:latest
