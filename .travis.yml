@@ -8,7 +8,6 @@ services:
 
 script:
  - mvn install
- - docker build -t travis .
  
 after_success:
  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
