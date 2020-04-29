@@ -11,8 +11,8 @@ script:
  - docker build -t travis .
  
 after_success:
- - docker login -u $DockerHub_User -p $DockerHub_Password
- - docker tag travis $DOCKER_USER/travis:$TRAVIS_BUILD_NUMBER
- - docker push $DOCKER_USER/travis:$TRAVIS_BUILD_NUMBER
- - docker tag travis $DOCKER_USER/travis:latest
- - docker push $DOCKER_USER/travis:latest
+ - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+ - docker build -t travis-ci-build-stages-demo .
+ - docker images
+ - docker tag travis-ci-build-stages-demo $DOCKER_USERNAME/travis-ci-build-stages-demo
+ - docker push $DOCKER_USERNAME/travis-ci-build-stages-demo
