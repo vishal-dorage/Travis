@@ -1,22 +1,22 @@
+sudo: required
 language: java
 
 jdk:
-  - openjdk8
-  - openjdk11
+ - openjdk8
 
 services:
-  - docker
+ - docker
 
 before_script:
 ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 script:
-  - mvn install
-  - docker build -t kubernetes .
- 
+ - mvn install
+ - docker build -t kubernetes .
+
 after_success:
-  - docker login -u $DockerHub_User -p $DockerHub_Password
-  - docker tag back $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
-  - docker push $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
-  - docker tag back $DOCKER_USER/kubernetes:latest
-  - docker push $DOCKER_USER/kubernetes:latest
+ - docker login -u $DockerHub_User -p $DockerHub_Password
+ - docker tag back $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
+ - docker push $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
+ - docker tag back $DOCKER_USER/kubernetes:latest
+ - docker push $DOCKER_USER/kubernetes:latest
