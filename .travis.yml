@@ -11,13 +11,13 @@ script:
  - mvn install
  
 before_install:
-  - docker build -t vishaldorage/kubernetes .
+  - docker build -t $DOCKER_USERNAME/kubernetes .
 script:
-  - docker images vishaldorage/kubernetes
+  - docker images $DOCKER_USERNAME/kubernetes
   
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push vishaldorage/kubernetes;
+    docker push $DOCKER_USERNAME/kubernetes;
     fi
   
