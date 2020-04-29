@@ -5,14 +5,19 @@ jdk:
  
 services:
  - docker
- - docker build -t kubernetes .
+ 
 
 script:
  - mvn install
  
+before_install:
+  - docker build -t vishaldorage/kubernetes .
+script:
+  - docker images vishaldorage/kubernetes
+  
 after_success:
-  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-  - docker tag kubernetes $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
-  - docker push $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
-  - docker tag kubernetes $DOCKER_USER/kubernetes:latest
-  - docker push $DOCKER_USER/kubernetes:latest
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push vishaldorage/kubernetes;
+    fi
+  
