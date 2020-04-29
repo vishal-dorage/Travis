@@ -8,11 +8,11 @@ services:
 
 script:
  - mvn install
- - docker build -t kubernetes .
+ - docker build -t travis .
  
 after_success:
  - docker login -u $DockerHub_User -p $DockerHub_Password
- - docker tag kubernetes $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
- - docker push $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
- - docker tag kubernetes $DOCKER_USER/kubernetes:latest
- - docker push $DOCKER_USER/kubernetes:latest
+ - docker tag travis $DOCKER_USER/travis:$TRAVIS_BUILD_NUMBER
+ - docker push $DOCKER_USER/travis:$TRAVIS_BUILD_NUMBER
+ - docker tag travis $DOCKER_USER/travis:latest
+ - docker push $DOCKER_USER/travis:latest
