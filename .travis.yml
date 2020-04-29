@@ -12,7 +12,7 @@ script:
  
 after_success:
  - docker login -u $DockerHub_User -p $DockerHub_Password
- - docker tag back $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
+ - docker tag kubernetes $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
  - docker push $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
- - docker tag back $DOCKER_USER/kubernetes:latest
+ - docker tag kubernetes $DOCKER_USER/kubernetes:latest
  - docker push $DOCKER_USER/kubernetes:latest
