@@ -6,18 +6,13 @@ jdk:
 services:
  - docker
  
-
 script:
  - mvn install
+ - docker build -t kubernetes .
  
-before_install:
-  - docker build -t $DOCKER_USERNAME/kubernetes .
-script:
-  - docker images $DOCKER_USERNAME/kubernetes
-  
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push $DOCKER_USERNAME/kubernetes;
-    fi
-  
+ - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+ - docker tag kubernetes $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
+ - docker push $DOCKER_USER/kubernetes:$TRAVIS_BUILD_NUMBER
+ - docker tag kubernetes $DOCKER_USER/kubernetes:latest
+ - docker push $DOCKER_USER/kubernetes:latest
