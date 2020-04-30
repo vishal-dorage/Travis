@@ -11,8 +11,8 @@ script:
  - docker build -t kubernetes .
  
 after_success:
- - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
- - docker tag kubernetes $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
- - docker push $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
- - docker tag kubernetes $DOCKER_USERNAME/kubernetes:latest
- - docker push $DOCKER_USERNAME/kubernetes:latest
+  - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  - docker tag back $DOCKER_USERNAME/back:$TRAVIS_BUILD_NUMBER
+  - docker push $DOCKER_USERNAME/back:$TRAVIS_BUILD_NUMBER
+  - docker tag back $DOCKER_USERNAME/back:latest
+  - docker push $DOCKER_USERNAME/back:latest
