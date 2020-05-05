@@ -20,13 +20,13 @@ stage:
 jobs:
   include:
     - stage: build
-	     script:
+      script:
         - docker build -t kubernetes .
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker tag kubernetes $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
         - docker push $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
         - docker tag kubernetes $DOCKER_USERNAME/kubernetes:latest
         - docker push $DOCKER_USERNAME/kubernetes:latest
-		 - stage: deploy
-     script:	
-       - kubectl get pods
+    - stage: deploy
+      script:	
+        - kubectl get pods
