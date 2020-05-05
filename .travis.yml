@@ -20,7 +20,7 @@ stage:
 jobs:
   include:
     - stage: build
-	  script:
+      script:
         - docker build -t kubernetes .
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker tag kubernetes $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
