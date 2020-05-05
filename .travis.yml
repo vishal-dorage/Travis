@@ -1,35 +1,34 @@
 jobs:
-language: java
+  include:
+    - stage: "Build"
+      language: java
 
-include:
-- stage: build
+      jdk:
+       - openjdk8
+ 
+      services:
+       - docker
+ 
+      script:
+       - mvn install
+       - docker build -t kubernetes .
+ 
+      after_success:
+       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+       - docker tag kubernetes $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
+       - docker push $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
+       - docker tag kubernetes $DOCKER_USERNAME/kubernetes:latest
+       - docker push $DOCKER_USERNAME/kubernetes:latest
+ 
+    - stage: "Deploy"
 
-jdk:
- - openjdk8
- 
-services:
- - docker
- 
-script:
- - mvn install
- - docker build -t kubernetes .
- 
-after_success:
- - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
- - docker tag kubernetes $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
- - docker push $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
- - docker tag kubernetes $DOCKER_USERNAME/kubernetes:latest
- - docker push $DOCKER_USERNAME/kubernetes:latest
- 
- - stage: build
+      install:
+        - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+        - chmod +x ./kubectl
+        - sudo mv ./kubectl /usr/local/bin/kubectl
+        - mkdir ${HOME}/.kube
+        - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
 
-install:
-  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-  - chmod +x ./kubectl
-  - sudo mv ./kubectl /usr/local/bin/kubectl
-  - mkdir ${HOME}/.kube
-  - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
-
-script:
-  - kubectl apply -f services.yml
-  - kubectl apply -f pods.yml
+      script:
+        - kubectl apply -f services.yml
+        - kubectl apply -f pods.yml
