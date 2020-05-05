@@ -27,7 +27,6 @@ jobs:
         - docker push $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
         - docker tag kubernetes $DOCKER_USERNAME/kubernetes:latest
         - docker push $DOCKER_USERNAME/kubernetes:latest
-		
     - stage: deploy
       script:	
         - kubectl get pods
