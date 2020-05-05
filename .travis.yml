@@ -1,4 +1,8 @@
+jobs:
 language: java
+
+include:
+- stage: build
 
 jdk:
  - openjdk8
@@ -16,6 +20,8 @@ after_success:
  - docker push $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
  - docker tag kubernetes $DOCKER_USERNAME/kubernetes:latest
  - docker push $DOCKER_USERNAME/kubernetes:latest
+ 
+ - stage: build
 
 install:
   - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
