@@ -5,28 +5,19 @@ jdk:
 services:
  - docker
  
-install:
-  - mvn install
+script:
   - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
   - chmod +x ./kubectl
   - sudo mv ./kubectl /usr/local/bin/kubectl
   - mkdir ${HOME}/.kube
   - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
   
-stage:
- - build
- - deploy
- 
-jobs:
-  include:
-    - stage: build
-      script:
-        - docker build -t kubernetes .
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker tag kubernetes $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
-        - docker push $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
-        - docker tag kubernetes $DOCKER_USERNAME/kubernetes:latest
-        - docker push $DOCKER_USERNAME/kubernetes:latest
-    - stage: deploy
-      script:	
-        - kubectl get pods
+ after_success:
+   - mvn install
+   - docker build -t kubernetes .
+   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+   - docker tag kubernetes $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
+   - docker push $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
+   - docker tag kubernetes $DOCKER_USERNAME/kubernetes:latest
+   - docker push $DOCKER_USERNAME/kubernetes:latest	
+   - kubectl get pods
