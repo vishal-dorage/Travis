@@ -31,5 +31,5 @@ jobs:
       script:	
         - kubectl apply -f services.yml
         - kubectl apply -f pods.yml
-        - kubectl get pod
+        
         
