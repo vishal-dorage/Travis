@@ -1,4 +1,10 @@
 language: java
+cache:
+  directories:
+  - $HOME/.m2
+
+jdk:
+  - openjdk8
 
 services:
  - docker
@@ -10,9 +16,6 @@ stage:
 jobs:
   include:
     - stage: build
-      before_install:
-      jdk:
-       - openjdk8
       script:
         - mvn install
         - docker build -t kubernetes .
