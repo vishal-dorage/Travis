@@ -4,25 +4,16 @@ jdk:
  
 services:
  - docker
- 
-install:
-  - mvn install
-  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-  - chmod +x ./kubectl
-  - sudo mv ./kubectl /usr/local/bin/kubectl
-  - mkdir ${HOME}/.kube
-  - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
-  
+
 stage:
  - build
  - deploy
-
-cache: bundler 
 
 jobs:
   include:
     - stage: build
       script:
+        - mvn install
         - docker build -t kubernetes .
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker tag kubernetes $DOCKER_USERNAME/kubernetes:$TRAVIS_BUILD_NUMBER
@@ -30,7 +21,12 @@ jobs:
         - docker tag kubernetes $DOCKER_USERNAME/kubernetes:latest
         - docker push $DOCKER_USERNAME/kubernetes:latest
     - stage: deploy
-      script:	
+      script:
+        - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+        - chmod +x ./kubectl
+        - sudo mv ./kubectl /usr/local/bin/kubectl
+        - mkdir ${HOME}/.kube
+        - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
         - kubectl apply -f services.yml
         - kubectl apply -f pods.yml
         - kubectl get pod
